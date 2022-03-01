@@ -1,1 +1,1 @@
-# Japan Remit Finance Co.,Ltd
+# FINDER CLINIC
