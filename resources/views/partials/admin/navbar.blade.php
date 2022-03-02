@@ -94,9 +94,9 @@
                           </a>
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                           @if (Auth::user()->roles()->pluck('id')->implode(', ') == 1)
-                           <a class="dropdown-item" href="/admin/accounts">Accounts</a>
-                          @elseif (Auth::user()->roles()->pluck('id')->implode(', ') == 3)
-                            <a class="dropdown-item" href="/admin/fullregistration">My Account</a>
+                           <a class="dropdown-item" href="/admin/accounts">ADD ADMIN</a>
+                          @else
+                            <a class="dropdown-item" href="/admin/edit_account">Edit Account</a>
                           @endif
                             <a class="dropdown-item" href="/admin/change_password">Change Password?</a>
                             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">Logout</a>

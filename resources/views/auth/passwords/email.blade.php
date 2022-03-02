@@ -18,24 +18,17 @@
               <div class="card-body">
                 <div class="form-group">
                     <label class="control-label text-white text-uppercase font-weight-bold" >Email:</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="now-ui-icons users_circle-08"></i>
-                            </span>
-                        </div>
-                        <input type="email" id="email" name="email" class="classic-input form-control font-weight-bold {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Email" autofocus >
-                        @if($errors->has('email'))
+                    <input type="email" id="email" name="email" class="classic-input form-control font-weight-bold {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Email" autofocus >
+                      @if($errors->has('email'))
                         <div class="invalid-feedback text-white">
                             {{ $errors->first('email') }}
                         </div>
-                    @endif
-                    </div>
+                      @endif
                    
                 </div>
               </div>
               <div class="card-footer text-center">
-                <input type="submit" name="login" id="login" class="btn btn-neutral btn-round btn-lg" value="Send Password Reset Link" />
+                <input type="submit" name="login" id="login" class="btn btn-info btn-round btn-lg" value="Send Password Reset Link" />
               </div>
               
             </form>

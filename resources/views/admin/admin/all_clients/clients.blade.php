@@ -16,8 +16,8 @@
                         <table class="table  table_records display" width="100%">
                             <thead class="text-uppercase thead-white">
                             <tr>
-                                <th width="100">Actions</th>
                                 <th width="100">Name</th>
+                                <th width="100">Email</th>
                                 <th width="100">Address</th>
                                 <th width="100">Contact Number</th>
                                 <th width="100">Created At</th>
@@ -27,13 +27,12 @@
                             <tbody class="text-uppercase font-weight-bold">
                                 @foreach($clients as $client)
                                 <tr data-entry-id="{{ $client->id ?? '' }}">
-                                    <td>
-                                        <button type="button" name="edit" edit="{{  $client->id ?? '' }}" class="text-uppercase edit btn btn-info btn-sm"><i class="fas fa-edit"></i></button>
-                                        <button type="button" name="remove" remove="{{  $client->id ?? '' }}" class="text-uppercase remove btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                       
-                                    </td>
+                                   
                                     <td>
                                         {{  $client->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{  $client->user->email ?? '' }}
                                     </td>
                                     <td>
                                         {{  $client->address ?? '' }}

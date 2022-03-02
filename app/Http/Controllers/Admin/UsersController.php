@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\RoleUser;
 use App\Models\User;
+use App\Models\Client;
+use App\Models\Clinic;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Rules\MatchOldPassword;
+use File;
 
 class UsersController extends Controller
 {
@@ -18,7 +21,7 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $accounts = RoleUser::whereIn('role_id',['1','2'])->get();
+        $accounts = RoleUser::whereIn('role_id',['1'])->get();
 
         return view('administration.accounts.accounts', compact('accounts'));
     }
@@ -32,29 +35,21 @@ class UsersController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         $validated =  Validator::make($request->all(), [
-            'firstname'             => ['required'],
-            'lastname'              => ['required'],
             'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'mobile_number'         => ['required'],
             'password'              => ['required', 'string', 'min:8'],
-            'role'                  => ['required'],
-        
         ]);
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         }
         $account = User::create([
-            'firstname'  => $request->input('firstname'),
-            'lastname'  => $request->input('lastname'),
             'email'  => $request->input('email'),
-            'mobile_number'  => $request->input('mobile_number'),
             'password' => Hash::make($request->input('password')),
-            'isRegistered'          => 1,
+            'isApproved'          => 1,
             'email_verified_at'     => date("Y-m-d H:i:s"),
         ]);
         RoleUser::insert([
             'user_id' => $account->id,
-            'role_id' => $request->input('role'),
+            'role_id' => 1,
         ]);
         return response()->json(['success' => 'Added Successfully.']);
 
@@ -66,11 +61,7 @@ class UsersController extends Controller
 
         if (request()->ajax()) {
             return response()->json([
-                'firstname'          => $account->firstname,
-                'lastname'           => $account->lastname,
                 'email'              => $account->email,
-                'mobile_number'      => $account->mobile_number,
-                'role'               => $role->role_id,
             ]);
         }
     }
@@ -79,21 +70,14 @@ class UsersController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         $validated =  Validator::make($request->all(), [
-            'firstname'             => ['required'],
-            'lastname'              => ['required'],
             'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users,email,' .$account->id,],
-            'mobile_number'         => ['required'],
-        
         ]);
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         }
 
         User::find($account->id)->update([
-            'firstname'  => $request->input('firstname'),
-            'lastname'  => $request->input('lastname'),
             'email'  => $request->input('email'),
-            'mobile_number'  => $request->input('mobile_number'),
             'password' => Hash::make($request->input('password')),
         ]);
         return response()->json(['success' => 'Updated Successfully.']);
@@ -127,6 +111,64 @@ class UsersController extends Controller
             'password' => Hash::make($request->input('new_password')),
           
         ]);
+        return response()->json(['success' => 'Updated Successfully.']);
+    }
+
+    public function edit_account(Request $request){
+        return view('admin.edit_account.edit_account');
+    }
+
+    public function edit_account_update(Request $request, $account){
+        if(auth()->user()->roles()->pluck('id')->implode(', ') == 2){
+            $validated =  Validator::make($request->all(), [
+                'name'             => ['required'],
+                'contact_number'   => ['required', 'numeric' ],
+                'address'          => ['required'],
+                'lat'              => ['required'],
+                'lng'              => ['required'],
+                'business_permit'  =>  ['mimes:png,jpg,jpeg,svg,bmp,ico', 'max:2040'],
+            ]); 
+
+            if ($validated->fails()) {
+                return response()->json(['errors' => $validated->errors()]);
+            }
+
+            $clinic = Clinic::where('id', $account)->first();
+
+            if ($request->file('business_permit')) {
+                File::delete(public_path('assets/images/business_permit/'.$clinic->business_permit));
+                $imgs = $request->file('business_permit');
+                $extension = $imgs->getClientOriginalExtension(); 
+                $file_name_to_save = time()."_".auth()->user()->id.".".$extension;
+                $imgs->move('assets/images/business_permit/', $file_name_to_save);
+                $clinic->business_permit = $file_name_to_save;
+            }
+           
+            $clinic->name = $request->name;
+            $clinic->contact_number = $request->contact_number;
+            $clinic->address = $request->address;
+            $clinic->lat = $request->lat;
+            $clinic->lng = $request->lng;
+            $clinic->save();
+        }
+        else if(auth()->user()->roles()->pluck('id')->implode(', ') == 3){
+            $validated =  Validator::make($request->all(), [
+                'name'   => ['required'],
+                'contact_number'   => ['required', 'numeric' ],
+                'address'   => ['required'],
+            ]);
+            if ($validated->fails()) {
+                return response()->json(['errors' => $validated->errors()]);
+            }
+
+            Client::find($account)->update([
+                'name'  => $request->input('name'),
+                'contact_number'  => $request->input('contact_number'),
+                'address'  => $request->input('address'),
+            ]);
+        }
+
+
         return response()->json(['success' => 'Updated Successfully.']);
     }
 

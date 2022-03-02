@@ -18,6 +18,7 @@
                             <tr>
                                 <th width="100">Actions</th>
                                 <th width="100">Name</th>
+                                <th width="100">Email</th>
                                 <th width="100">Address</th>
                                 <th width="100">Contact Number</th>
                                 <th width="100">BUSINESS PERMIT</th>
@@ -49,6 +50,9 @@
                                     </td>
                                     <td>
                                         {{  $clinic->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{  $clinic->user->email ?? '' }}
                                     </td>
                                     <td>
                                         {{  $clinic->address ?? '' }}

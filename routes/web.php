@@ -11,7 +11,7 @@ Route::redirect('/', '/login');
 
 // Finder Clinic
 Route::get('/finder_clinic', [FinderClinicContoller::class, 'index'])->name('finder_clinic.index');
-
+Route::get('/finder_clinic/search', [FinderClinicContoller::class, 'search'])->name('finder_clinic.search');
 
 Auth::routes(['verify' => true]);
 
@@ -81,7 +81,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('/announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
 
 
-
+    //MY ACCOUNT
+    Route::get('/edit_account',  'UsersController@edit_account')->name('accounts.edit_account');
+    Route::post('/edit_account/{account}',  'UsersController@edit_account_update')->name('accounts.edit_account_update');
 
    
 });

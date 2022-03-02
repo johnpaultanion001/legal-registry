@@ -14,11 +14,11 @@
                     </div>
                     <div class="card-body">
                     <!-- Tab panes -->
-                        <form method="post" id="address_search" class="form-horizontal">
+                        <form method="post" id="clinics_search" class="form-horizontal">
                             @csrf
                             <div class="form-group">
                                 <div class="input-group">
-                                   <input type="text" name="address" id="address"  class="form-control font-weight-bold" placeholder="SEARCH CLINIC HERE">
+                                   <input type="text" name="search" id="search"  class="form-control font-weight-bold" placeholder="SEARCH CLINIC OR ADDRESS HERE">
                                     <div class="input-group-append">
                                         <span class="input-group-text">
                                             <button type="submit" class="btn btn-primary btn-sm">
@@ -27,31 +27,18 @@
                                         </span>
                                     </div>
                                     <span class="invalid-feedback" role="alert">
-                                        <strong id="error-address"></strong>
+                                        <strong id="error-search"></strong>
                                     </span>
                                 </div>
                                 
                             </div>
-                           
-
                         </form>
-                        <div class="form-group text-center">
-                            <select name="province_dd" id="province_dd" class="classic-input2 form-control select2" style="width: 100%">
-                                <option value="" disabled selected>Clinic</option>
-                                @foreach ($clinics as $clinic)
-                                    <option value="{{$clinic->id}}">{{$clinic->name}}</option>
-                                @endforeach
-                            </select>
-                            <span class="invalid-feedback" role="alert">
-                                <strong id="error-province_dd"></strong>
-                            </span>
-                        </div>
                        
                         <div class="card">
                             <div class="card-body">
                                 <div class="scrollable">
                                 <h6 class="color-red">LIST OF AVAILABLE CLINICS</h6>
-                                    <div id="bank_list">
+                                    <div id="clinics_list">
                                         @foreach ($clinics as $clinic)
                                         <div class="col-sm-11 btn btn-outline-primary">
                                             <div class="row">
@@ -211,7 +198,72 @@
 @section('scripts')
 
 <script>
+$('#clinics_search').on('submit', function(event){
+    event.preventDefault();
+    $('.form-control').removeClass('is-invalid')
+    var action_url = "{{ route('finder_clinic.search') }}";
+    var type = "GET";
 
+    $.ajax({
+        url: action_url,
+        method:type,
+        data:$(this).serialize(),
+        dataType:"json",
+        beforeSend:function(){
+            $('#search').addClass('is-invalid');
+            $('#error-search').text('LOADING...');
+        },
+        success:function(data){
+            $('#search').removeClass('is-invalid');
+            
+            if(data.errors){
+                $.each(data.errors, function(key,value){
+                   if(key == $('#'+key).attr('id')){
+                        $('#'+key).addClass('is-invalid')
+                        $('#error-'+key).text(value)
+                    }
+                })
+            }
+          
+            var clinics = '';
+            $.each(data.clinics, function(key,value){
+                clinics += ' <div class="col-sm-11 btn btn-outline-primary">';
+                    clinics += '<div class="row">'
+                        clinics += '<div class="col-12">'
+                            clinics += '<h5 class="text-dark font-weight-bold">'+value.name+'</h5>'
+                        clinics += '</div>'
+                        clinics += '<div class="col-12 text-left">'
+                            clinics += '<h5 class="text-dark font-weight-bold">Available Services:</h5>'
+                        clinics += '</div>'
+                        clinics += '<div class="col-12">'
+                            clinics += '<div class="row">'
+                                $.each(value.services, function(key,value){
+                                    clinics += '<div class="col-4">'
+                                        clinics += '<button service="'+value.id+'" class="service btn btn-sm  btn-success text-white">'+value.name+'</button>'
+                                    clinics += '</div>'
+                                });
+                            clinics += '</div>'
+                        clinics += '</div>'
+
+                        clinics += '<hr class="my-2 bg-primary">'
+                        clinics += '<div class="col-12 text-right">'
+                            clinics += '<button class="btn btn-sm btn-primary" id="view_clinics" address="'+value.name+'" lat="'+value.lat+'" lng="'+value.lng+'" dplay="'+value.address+'">'
+                                clinics += '<i class="now-ui-icons location_pin" style="font-size: 25px"></i>'
+                            clinics += '</button>'
+
+                        clinics += '</div>'
+                    clinics += '</div>'
+                clinics += '</div>';
+            });
+            $('#clinics_list').empty().append(clinics);
+
+        },
+        error:function(){
+            $('#search').addClass('is-invalid');
+            $('#error-search').text('NO DATA RESULT');
+        } 
+    });
+});
 
 $(document).on('click', '#view_clinics', function(){
     var address = $(this).attr('address');
@@ -264,7 +316,7 @@ function initMap(){
     $.each( clinics, function( index, value ){
         addMarker({
             coords:{lat:parseFloat(value.lat), lng:parseFloat(value.lng)},
-            content: value.name,
+            content: value.address,
         });
         
     });

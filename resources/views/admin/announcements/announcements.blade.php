@@ -12,7 +12,7 @@
         </div>
         <div class="card">
         @can('admin_access')
-            <button type="button" id="create_record"class="text-uppercase btn btn-info">Add Record</button>
+            <button type="button" id="create_record"class="text-uppercase btn btn-info">Add ANNOUNCEMENT</button>
         @endcan
         <br>
             <div class="container p-2">

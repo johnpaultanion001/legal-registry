@@ -60,6 +60,13 @@
       .invalid-feedback {
             font-size: 100%;
         }
+    .input-group-append{
+        background-color: transparent;
+        border-top: solid 1px #111;
+        border-right: solid 1px #111;
+        border-bottom: solid 1px #111;
+        color: #2c2c2c;
+    }
      
   </style>
   @yield('styles')

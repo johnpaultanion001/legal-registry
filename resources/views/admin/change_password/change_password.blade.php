@@ -99,7 +99,6 @@ $('#cpForm').on('submit', function(event){
                             cancel:  {
                                 text: 'LOGOUT',
                                 btnClass: 'btn-red',
-                                keys: ['enter', 'shift'],
                                 action: function(){
                                     document.getElementById('logoutform').submit();
                                 }
@@ -141,7 +140,7 @@ $("body").on('click', '.toggle-confirm_password', function() {
     }
 });
 $(document).on('click', '#cancel_button', function(){
-    window.location.href = '/admin/home';
+    window.location.href = '/admin/announcements';
 });
 
 </script>

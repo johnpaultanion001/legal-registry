@@ -6,9 +6,9 @@
             <div class="card">
                     <div class="card-header p-2">
                         <h4>
-                            Accounts
+                            ADD ADMIN ACCOUNT
                         </h4>
-                            <button type="button" id="create_record" class="btn btn-primary btn-sm">New Account</button>
+                            <button type="button" id="create_record" class="btn btn-primary btn-sm">New Admin</button>
                     </div>
 
                     <div class="card-body">
@@ -21,16 +21,7 @@
                                             
                                         </th>
                                         <th>
-                                            Name
-                                        </th>
-                                        <th>
-                                            Email/Username
-                                        </th>
-                                        <th>
-                                            Mobile No
-                                        </th>
-                                        <th>
-                                            Role
+                                            Email
                                         </th>
                                         <th>
                                             Created At
@@ -45,20 +36,7 @@
                                                 <button type="button" remove="{{  $account->user->id ?? '' }}" class="remove btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                             </td>
                                             <td>
-                                                {{  $account->user->firstname ?? '' }} {{  $account->user->lastname ?? '' }}
-                                            </td>
-                                            <td>
                                                 {{  $account->user->email ?? '' }}
-                                            </td>
-                                            <td>
-                                                {{  $account->user->mobile_number ?? '' }}
-                                            </td>
-                                            <td>
-                                                @if($account->role_id == 1)
-                                                    ADMIN
-                                                @elseif($account->role_id == 2)
-                                                    STAFF
-                                                @endif
                                             </td>
                                             <td>
                                                 {{ $account->user->created_at->format('M j , Y h:i A') }}
@@ -90,24 +68,8 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                  <div id="modalbody" class="modalbody row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label text-uppercase" >First Name:<span class="text-danger">*</span> </label>
-                                <input type="text" name="firstname" id="firstname" class="form-control" />
-                                <span class="invalid-feedback" role="alert">
-                                    <strong id="error-firstname"></strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label text-uppercase" >Last Name:<span class="text-danger">*</span> </label>
-                                <input type="text" name="lastname" id="lastname" class="form-control" />
-                                <span class="invalid-feedback" role="alert">
-                                    <strong id="error-lastname"></strong>
-                                </span>
-                            </div>
-                        </div>
+                      
+                        
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label text-uppercase" >Email:<span class="text-danger">*</span> </label>
@@ -119,29 +81,6 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="control-label text-uppercase" >Mobile Number:<span class="text-danger">*</span> </label>
-                                <input type="text" name="mobile_number" id="mobile_number" class="form-control" />
-                                <span class="invalid-feedback" role="alert">
-                                    <strong id="error-mobile_number"></strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label text-uppercase" >Role <span class="text-danger">*</span></label>
-                                <select name="role" id="role" class="form-control select2" style="width: 100%">
-                                    <option value="">...</option>
-                                    <option value="1">ADMIN</option>
-                                    <option value="2">STAFF</option>
-                                </select>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong id="error-role"></strong>
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="col-sm-6">
-                            <div class="form-group">
                                 <label class="control-label text-uppercase" >Password:<span class="text-danger">*</span> </label>
                                 <input type="password" name="password" id="password" class="form-control" />
                                 <span class="invalid-feedback" role="alert">
@@ -149,7 +88,6 @@
                                 </span>
                             </div>
                         </div>
-
                     </div>
                     <input type="hidden" name="action" id="action" value="Add" />
                     <input type="hidden" name="hidden_id" id="hidden_id" />
@@ -180,7 +118,6 @@ $(document).on('click', '#create_record', function(){
     $('.modal-title').text('New Account');
     $('#action_button').val('Submit');
     $('#action').val('Add');
-    $("#role").attr('disabled', false);
 });
 
 $('#accountsForm').on('submit', function(event){
@@ -299,15 +236,10 @@ $(document).on('click', '.edit', function(){
         success:function(data){
             $("#action_button").attr("disabled", false);
             $("#action_button").attr("value", "Submit");
-          
-            $('#firstname').val(data.firstname);
-            $('#lastname').val(data.lastname);
+            
             $('#email').val(data.email);
-            $('#mobile_number').val(data.mobile_number);
-            $("#role").select2("trigger", "select", {
-                        data: { id: data.role }
-                    });
-            $("#role").attr('disabled', true);
+        
+            
             $('#hidden_id').val(id);
             $('#action').val('Edit');
         }
