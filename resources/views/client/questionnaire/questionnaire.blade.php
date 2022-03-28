@@ -6,7 +6,7 @@
         <ul class="nav nav-tabs justify-content-center" role="tablist">
             @foreach(auth()->user()->client->industries()->get() as $industry)
                 <li class="nav-item ">
-                    <a class="nav-link {{ request()->is('admin/client/questionnaire/'.$industry->type_of_industry->id) ? 'active' : '' }}" href="/admin/client/questionnaire/{{$industry->type_of_industry->id}}">
+                    <a class="nav-link {{ request()->is('admin/client/questionnaire/'.$industry->type_of_industry->id) ? 'active1' : '' }}" href="/admin/client/questionnaire/{{$industry->type_of_industry->id}}">
                         {{$industry->type_of_industry->title}}
                     </a>
                 </li>
@@ -85,8 +85,8 @@
                                                                                 <input type="text" class="form-control" name="remarks{{$law->id}}" id="remarks{{$law->id}}" value="{{$answer->remarks ?? ''}}"/>
                                                                                 <div class="input-group-append">
                                                                                     <span class="input-group-text">
-                                                                                        <i class="now-ui-icons arrows-1_cloud-upload-94 file_icon" file_id="{{$law->id}}" style="cursor: pointer; font-size: 1.4em; font-weight: bold;"></i>
-                                                                                        <input type="file"  name="file_remarks{{$law->id}}" id="file_remarks{{$law->id}}" style="display:none"/>
+                                                                                        <i class="now-ui-icons arrows-1_cloud-upload-94 file_icon {{$answer->file_remarks != '' ? 'text-success': ''}}" id="file_icon{{$law->id}}" file_id="{{$law->id}}" style="cursor: pointer; font-size: 1.4em; font-weight: bold;"></i>
+                                                                                        <input type="file"  name="file_remarks{{$law->id}}" id="file_remarks{{$law->id}}" style="display:none" class="file_upload" file_id="{{$law->id}}"/>
                                                                                         
                                                                                     </span>
                                                                                 </div>
@@ -127,8 +127,8 @@
                                                                                 <input type="text" class="form-control" name="remarks{{$law->id}}" id="remarks{{$law->id}}" value=""/>
                                                                                 <div class="input-group-append">
                                                                                     <span class="input-group-text">
-                                                                                        <i class="now-ui-icons arrows-1_cloud-upload-94 file_icon" file_id="{{$law->id}}" style="cursor: pointer; font-size: 1.4em; font-weight: bold;"></i>
-                                                                                        <input type="file"  name="file_remarks{{$law->id}}" id="file_remarks{{$law->id}}" style="display:none"/>
+                                                                                        <i class="now-ui-icons arrows-1_cloud-upload-94 file_icon" id="file_icon{{$law->id}}" file_id="{{$law->id}}" style="cursor: pointer; font-size: 1.4em; font-weight: bold;"></i>
+                                                                                        <input type="file"  name="file_remarks{{$law->id}}" id="file_remarks{{$law->id}}" style="display:none" class="file_upload" file_id="{{$law->id}}"/>
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
@@ -208,8 +208,14 @@
     $(document).on('click', '.file_icon', function(){
         var id = $(this).attr('file_id');
         $('#file_remarks'+id).trigger('click');
-       
+    });
+    
+
+    $('.file_upload').on("change", function(event){
+        var id = $(this).attr('file_id');
+        $('#file_icon'+id).addClass('text-success');
     });
 
+   
 </script>
 @endsection

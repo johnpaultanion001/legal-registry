@@ -301,10 +301,10 @@ class AdminController extends Controller
             return response()->json(['errors' => $validated->errors()]);
         }
         $account = User::create([
-            'email'  => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'isComplete'          => 1,
-            'isActivate'          => 1,
+            'email'                 => $request->input('email'),
+            'password'              => Hash::make($request->input('password')),
+            'isComplete'            => 1,
+            'subscribe_at'          => '2099-01-01',
             'email_verified_at'     => date("Y-m-d H:i:s"),
         ]);
         RoleUser::insert([

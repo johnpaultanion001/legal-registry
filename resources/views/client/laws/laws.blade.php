@@ -6,7 +6,7 @@
         <ul class="nav nav-tabs justify-content-center" role="tablist">
             @foreach(auth()->user()->client->industries()->get() as $industry)
                 <li class="nav-item ">
-                    <a class="nav-link {{ request()->is('admin/client/legal_compliance_laws/'.$industry->type_of_industry->id) ? 'active' : '' }}" href="/admin/client/legal_compliance_laws/{{$industry->type_of_industry->id}}">
+                    <a class="nav-link {{ request()->is('admin/client/legal_compliance_laws/'.$industry->type_of_industry->id) ? 'active1' : '' }}" href="/admin/client/legal_compliance_laws/{{$industry->type_of_industry->id}}">
                         {{$industry->type_of_industry->title}}
                     </a>
                 </li>

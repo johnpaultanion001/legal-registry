@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\Client;
-use App\Models\Clinic;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -57,6 +56,10 @@ class RegisterController extends Controller
         RoleUser::insert([
             'user_id' => $user->id,
             'role_id' => 2,
+        ]);
+
+        Client::create([
+            'user_id' => $user->id,
         ]);
 
         return $user;

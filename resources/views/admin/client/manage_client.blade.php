@@ -15,10 +15,13 @@
                 <select name="client_dd" id="client_dd" class="form-control select2">
                     <option value="">Select</option>
                     @foreach($clients as $client)
-                        <option value="{{$client->user->client->user_id}}"
-                         {{$client->user->client->user_id == $client1->user_id ? 'selected' : ''}}>
-                            {{$client->user->client->name}}
-                        </option>
+                        @if($client->user->isComplete == 1)
+                            <option value="{{$client->user->client->user_id}}"
+                            {{$client->user->client->user_id == $client1->user_id ? 'selected' : ''}}>
+                                {{$client->user->client->name}}
+                            </option>
+                        @endif
+                       
                     @endforeach
                 </select>
             </div>
@@ -42,7 +45,7 @@
                                     <th>Contact Number</th>
                                     <th>Address</th>
                                     <th>Date Register</th>
-                                    <th>Account Status</th>
+                                    <th>Account Subscription</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,10 +75,17 @@
                                         </span>
                                     </td>
                                     <td class="font-weight-bold">
-                                        {{$client1->created_at}}
+                                        {{ $client1->created_at->format('M j , Y h:i A') }}
                                     </td>
                                     <td class="font-weight-bold">
-                                        <button user_id="{{$client1->user->id}}" class="font-weight-bold account_status btn {{$client1->user->isActivate == 1 ? 'btn-success' : 'btn-danger'}}">{{$client1->user->isActivate == 1 ? 'Subscribed' : 'Unsubscribed'}}</button>
+                                        <h6><span class="{{$client1->user->subscribe_at < Carbon\Carbon::now()->subDays(1) ? 'text-danger' : 'text-success'}}">
+                                            {{\Carbon\Carbon::createFromFormat('Y-m-d',$client1->user->subscribe_at)->format('M j , Y')}}</span> 
+                                            <br>
+                                             Date Of Subscription</h6>
+                                        
+                                        <button class="font-weight-bold account_subscription btn {{$client1->user->subscribe_at < Carbon\Carbon::now()->subDays(1) ? 'btn-danger' : 'btn-success'}}">
+                                            {{$client1->user->subscribe_at < Carbon\Carbon::now()->subDays(1) ? 'UNSUBSCRIBED' : 'SUBSCRIBED'}}
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -216,6 +226,42 @@
 </div>
 
 
+<form method="post" id="myForm">
+    @csrf
+    <div class="modal fade" id="myModal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title text-uppercase font-weight-bold">Date of Subscription</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-12" id="form_subtitile_of_law">
+                    <div class="form-group">
+                        <label class="control-label text-uppercase  h6" >Date of Subscription<span class="text-danger">*</span></label>
+                        <input type="date" name="date_of_subscription" id="date_of_subscription" class="form-control" value="{{$client1->user->subscribe_at}}" />
+                        
+                        <span class="text-danger">
+                            <strong id="error-date_of_subscription"></strong>
+                        </span>
+                    </div>
+                </div>
+               
+                <input type="hidden" name="user_id_subs" id="user_id_subs" value="{{$client1->user->id}}"/>
+               
+            </div>
+            
+            <div class="modal-footer bg-white">
+                <button type="button" class="btn btn-white text-uppercase" data-dismiss="modal">Close</button>
+                <input type="submit" name="action_button_subscription" id="action_button_subscription" class="text-uppercase btn btn-primary" value="Sumbit" />
+            </div>
+        
+        </div>
+    </div>
+</form>
+
 
 @endsection
 @section('scripts')
@@ -229,23 +275,51 @@ $(".menu_act").on('click', function() {
     $(".tab_act").removeClass("active");
 });
 
-$(document).on('click', '.account_status', function(event){
-    var user_id = $(this).attr('user_id');
-    var _token =  $('input[name="_token"]').val();
+$(document).on('click', '.account_subscription', function(event){
+    $('#myModal').modal('show');
+    $('#myForm')[0].reset();
+    $('.form-control').removeClass('is-invalid');
+});
 
+$('#myForm').on('submit', function(event){
+    event.preventDefault();
+    $('.form-control').removeClass('is-invalid')
+    
     $.ajax({
-        url:"{{ route('admin.manage_client.account_status') }}",
-        method:"GET",
-        dataType: "json",
-        data:{user_id:user_id, _token:_token},
-        beforeSend: function() {
-            $('.account_status').attr('disabled', true);
+        url: "/admin/manage_client/"+$('#user_id_subs').val()+"/subscription",
+        method: "PUT",
+        data: $(this).serialize(),
+        dataType:"json",
+        beforeSend:function(){
+            $('#action_button_subscription').attr('disabled', true);
         },
         success:function(data){
-            if(data.success){
-               location.reload();  
+            $('#action_button_subscription').attr('disabled', false);
+            if(data.errors){
+                $.each(data.errors, function(key,value){
+                    if(key == $('#'+key).attr('id')){
+                        $('#'+key).addClass('is-invalid')
+                        $('#error-'+key).text(value)
+                    }
+                })
             }
-            
+            if(data.success){
+                $.confirm({
+                    title: data.success,
+                    content: "",
+                    type: 'green',
+                    buttons: {
+                        confirm: {
+                            text: '',
+                            btnClass: 'btn-green',
+                            keys: ['enter', 'shift'],
+                            action: function(){
+                                location.reload();
+                            }
+                        },
+                    }
+                });
+            }
         }
     });
 });

@@ -23,7 +23,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
  });
 
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified', 'isComplete', 'isActivate']], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified', 'isComplete', 'isSubscribe']], function () {
      
     // Client
     // QUESTIONNAIRE FORM
@@ -64,7 +64,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Manage Client
     Route::get('/manage_client', 'ManageClientController@manage_client_index')->name('manage_client.manage_client_index');
     Route::get('/manage_client/{user_id}', 'ManageClientController@manage_client')->name('manage_client.manage_client');
-    Route::get('/manage_client/account/status', 'ManageClientController@account_status')->name('manage_client.account_status');
+    Route::put('/manage_client/{user_id}/subscription', 'ManageClientController@subscription')->name('manage_client.subscription');
     Route::post('/manage_client/{user_id}/update', 'ManageClientController@update_client')->name('manage_client.update_client');
     Route::put('/manage_client/{user_id}/dpass', 'ManageClientController@defaultPassowrd')->name('manage_client.dpass');
     Route::delete('/manage_client/{user_id}/clear_form', 'ManageClientController@clear_form')->name('manage_client.clear_form');

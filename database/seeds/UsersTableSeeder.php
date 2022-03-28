@@ -22,9 +22,9 @@ class UsersTableSeeder extends Seeder
                 'email'          => 'admin@admin.com',
                 'password'       => '$2y$10$vUIzDlvfpu2yOATsPYcPaOTY/zgbgwViLIWSfZxSlmRBFV.g/fmOW',
                 'isComplete'     => 1,
-                'isActivate'     => 1,
                 'email_verified_at' => date("Y-m-d H:i:s"),
                 'remember_token' => null,
+                'subscribe_at' => '2099-01-01',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
@@ -32,9 +32,9 @@ class UsersTableSeeder extends Seeder
                 'email'          => 'client@client.com',
                 'password'       => '$2y$10$vUIzDlvfpu2yOATsPYcPaOTY/zgbgwViLIWSfZxSlmRBFV.g/fmOW',
                 'isComplete' => 1,
-                'isActivate' => 1,
                 'email_verified_at' => date("Y-m-d H:i:s"),
                 'remember_token' => null,
+                'subscribe_at' => '2022-02-21',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
@@ -52,18 +52,13 @@ class UsersTableSeeder extends Seeder
             ],
         ];
         $type_of_industries = [
-            [
+            [ 
                 'title'      => 'Scaffolding',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
             [
                 'title'      => 'Painting',
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),
-            ],
-            [
-                'title'      => 'Tunnelling',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],

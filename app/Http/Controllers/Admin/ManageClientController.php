@@ -28,20 +28,20 @@ class ManageClientController extends Controller
         $client1         = Client::where('user_id', $user_id)->first();
         return view('admin.client.manage_client', compact('clients','client1'));
     }
-    public function account_status(Request $request){
-        $user_id = $request->get('user_id');
-        $user = User::where('id', $user_id)->first();
+    public function subscription(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $validated =  Validator::make($request->all(), [
+            'date_of_subscription' => ['required','after:today'],
+        ]);
 
-        if($user->isActivate == 1){
-            $user->update([
-                'isActivate'     =>  0,
-            ]);
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
         }
-        elseif($user->isActivate == 0){
-            $user->update([
-                'isActivate'     =>  1,
-            ]);
-        }
+
+        User::where('id', $request->input('user_id_subs'))->update([
+            'subscribe_at'  => $request->input('date_of_subscription'),
+        ]);
+
         return response()->json(['success'=>'Successfully Updated']);
     }
 

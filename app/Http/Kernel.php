@@ -44,6 +44,6 @@ class Kernel extends HttpKernel
         'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'isComplete'       => \App\Http\Middleware\IsComplete::class,
-        'isActivate'       => \App\Http\Middleware\IsActivate::class,
+        'isSubscribe'       => \App\Http\Middleware\IsSubscribe::class,
     ];
 }

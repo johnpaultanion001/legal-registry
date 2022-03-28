@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
-
-class IsActivate
+class IsSubscribe
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,8 @@ class IsActivate
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->isActivate == 0) {
+        date_default_timezone_set('Asia/Manila');
+        if (auth()->user()->subscribe_at < Carbon::today()->subDays(1)) {
             return redirect()->to('admin/client/activate');
         }
         return $next($request);

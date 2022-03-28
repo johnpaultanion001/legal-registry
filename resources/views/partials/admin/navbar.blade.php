@@ -24,7 +24,7 @@
                             </a>
                           </li>
                       @else
-                        @if (Auth::user()->isActivate == true)
+                        @if (Auth::user()->isComplete == true)
                           <li class="nav-item">
                             <a class="nav-link {{ request()->is('admin/client/questionnaire') || request()->is('admin/client/questionnaire/*') ? 'active' : '' }}" href="/admin/client/questionnaire">
                               <p class="text-uppercase">Questionnaire Form</p>

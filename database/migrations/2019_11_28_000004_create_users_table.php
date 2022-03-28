@@ -12,8 +12,8 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('email')->unique();
             $table->boolean('isComplete')->default(false);
-            $table->boolean('isActivate')->default(false);
             $table->datetime('email_verified_at')->nullable();
+            $table->date('subscribe_at')->default('2022-01-01');
             $table->string('password');
             $table->string('remember_token')->nullable();
             $table->timestamps();

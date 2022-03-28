@@ -12,7 +12,7 @@
         <ul class="nav nav-tabs justify-content-center" role="tablist">
             @foreach($industries as $industry)
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/library_index/'.$industry->id) ? 'active' : '' }}" href="/admin/library_index/{{$industry->id}}">
+                    <a class="nav-link {{ request()->is('admin/library_index/'.$industry->id) ? 'active1' : '' }}" href="/admin/library_index/{{$industry->id}}">
                         {{$industry->title}} 
                     </a>
                 </li>
