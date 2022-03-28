@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RoleUser;
 use App\Models\User;
 use App\Models\Client;
-use App\Models\Clinic;
+use App\Models\Client_TOI;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,83 +17,58 @@ use File;
 
 class UsersController extends Controller
 {
-    public function index()
-    {
-        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $accounts = RoleUser::whereIn('role_id',['1'])->get();
-
-        return view('administration.accounts.accounts', compact('accounts'));
-    }
-
-    public function create()
-    {
-        
-    }
-
-    public function store(Request $request)
-    {
-        date_default_timezone_set('Asia/Manila');
-        $validated =  Validator::make($request->all(), [
-            'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password'              => ['required', 'string', 'min:8'],
-        ]);
-        if ($validated->fails()) {
-            return response()->json(['errors' => $validated->errors()]);
-        }
-        $account = User::create([
-            'email'  => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'isApproved'          => 1,
-            'email_verified_at'     => date("Y-m-d H:i:s"),
-        ]);
-        RoleUser::insert([
-            'user_id' => $account->id,
-            'role_id' => 1,
-        ]);
-        return response()->json(['success' => 'Added Successfully.']);
-
-    }
-
-    public function edit(User $account)
-    {
-        $role = RoleUser::where('user_id', $account->id)->first();
-
-        if (request()->ajax()) {
-            return response()->json([
-                'email'              => $account->email,
+    public function account_update(Request $request){
+       
+            $validated =  Validator::make($request->all(), [
+                'name'   => ['required'],
+                'contact_number' => ['required', 'string', 'min:8','max:11'],
+                'address'   => ['required'],
             ]);
-        }
-    }
+            if ($validated->fails()) {
+                return response()->json(['errors' => $validated->errors()]);
+            }
 
-    public function update(Request $request, User $account)
-    {
-        date_default_timezone_set('Asia/Manila');
-        $validated =  Validator::make($request->all(), [
-            'email'                 => ['required', 'string', 'email', 'max:255', 'unique:users,email,' .$account->id,],
-        ]);
-        if ($validated->fails()) {
-            return response()->json(['errors' => $validated->errors()]);
-        }
-
-        User::find($account->id)->update([
-            'email'  => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-        ]);
+            $client = Client::updateOrCreate(
+                [
+                    'user_id'      => auth()->user()->id,
+                ],
+                [
+                    'name'  => $request->input('name'),
+                    'contact_number'  => $request->input('contact_number'),
+                    'address'  => $request->input('address'),
+                    'user_id'      => auth()->user()->id,
+                ]
+            );
+            User::find(auth()->user()->id)->update([
+                'isComplete'  => true,
+            ]);
+            if($request->input('type_of_industry') == null){
+                return response()->json(['no_selected' => 'At least one INDUSTRY TYPE must be selected.']);
+            }
+            Client_TOI::where('client_id', $client->id)
+                        ->whereNotIn('type_of_industry_id', $request->input('type_of_industry'))
+                        ->delete();
+            foreach($request->input('type_of_industry') as $ids )
+            {
+                Client_TOI::updateOrCreate(
+                    [
+                        'client_id'    => $client->id,
+                        'type_of_industry_id' => $ids,
+                    ],
+                    [
+                        'client_id'    => $client->id,
+                        'type_of_industry_id' => $ids,
+                    ]
+                );
+            }
+           
         return response()->json(['success' => 'Updated Successfully.']);
-    }
-
-   
-
-    public function destroy(User $account)
-    {
-        RoleUser::where('user_id',$account->id)->delete();
-        return response()->json(['success' => $account->delete()]);
     }
 
     public function changepassword()
     {
-        return view('admin.change_password.change_password');
+        return view('client.change_password.change_password');
 
     }
     public function passwordupdate(Request $request , User $user){
@@ -111,64 +86,6 @@ class UsersController extends Controller
             'password' => Hash::make($request->input('new_password')),
           
         ]);
-        return response()->json(['success' => 'Updated Successfully.']);
-    }
-
-    public function edit_account(Request $request){
-        return view('admin.edit_account.edit_account');
-    }
-
-    public function edit_account_update(Request $request, $account){
-        if(auth()->user()->roles()->pluck('id')->implode(', ') == 2){
-            $validated =  Validator::make($request->all(), [
-                'name'             => ['required'],
-                'contact_number'   => ['required', 'numeric' ],
-                'address'          => ['required'],
-                'lat'              => ['required'],
-                'lng'              => ['required'],
-                'business_permit'  =>  ['mimes:png,jpg,jpeg,svg,bmp,ico', 'max:2040'],
-            ]); 
-
-            if ($validated->fails()) {
-                return response()->json(['errors' => $validated->errors()]);
-            }
-
-            $clinic = Clinic::where('id', $account)->first();
-
-            if ($request->file('business_permit')) {
-                File::delete(public_path('assets/images/business_permit/'.$clinic->business_permit));
-                $imgs = $request->file('business_permit');
-                $extension = $imgs->getClientOriginalExtension(); 
-                $file_name_to_save = time()."_".auth()->user()->id.".".$extension;
-                $imgs->move('assets/images/business_permit/', $file_name_to_save);
-                $clinic->business_permit = $file_name_to_save;
-            }
-           
-            $clinic->name = $request->name;
-            $clinic->contact_number = $request->contact_number;
-            $clinic->address = $request->address;
-            $clinic->lat = $request->lat;
-            $clinic->lng = $request->lng;
-            $clinic->save();
-        }
-        else if(auth()->user()->roles()->pluck('id')->implode(', ') == 3){
-            $validated =  Validator::make($request->all(), [
-                'name'   => ['required'],
-                'contact_number'   => ['required', 'numeric' ],
-                'address'   => ['required'],
-            ]);
-            if ($validated->fails()) {
-                return response()->json(['errors' => $validated->errors()]);
-            }
-
-            Client::find($account)->update([
-                'name'  => $request->input('name'),
-                'contact_number'  => $request->input('contact_number'),
-                'address'  => $request->input('address'),
-            ]);
-        }
-
-
         return response()->json(['success' => 'Updated Successfully.']);
     }
 

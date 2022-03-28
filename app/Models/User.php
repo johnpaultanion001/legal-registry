@@ -21,7 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
     
     protected $fillable = [
         'email',
-        'isApproved',
+        'isComplete',
+        'isActivate',
         'email_verified_at',
         
         'password',
@@ -37,10 +38,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    public function clinic()
-    {
-        return $this->belongsTo(Clinic::class, 'id', 'user_id');
-    }
     public function client()
     {
         return $this->belongsTo(Client::class, 'id', 'user_id');

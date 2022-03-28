@@ -48,11 +48,11 @@
                   
                 </form>
               </div>
-              <p class="text-center mt-3 color-black" style="font-size: 15px; font-weight: 500;">Do not have an account yet? <a href="/register?user_type=Client"><b class="color-black" style="font-weight: 700">Register here</b></a></p>
+              <p class="text-center mt-3 color-black" style="font-size: 15px; font-weight: 500;">Do not have an account yet? <a href="/register"><b class="color-black" style="font-weight: 700">Register here</b></a></p>
             </div>
           </div>
-          <div class="d-none d-md-block col-md-6 col-lg-7" style="background-image: url('../assets/images/bg11.jpg'); background-size: cover; background-position: top center;">
-            
+          <div class="d-none d-md-block col-md-6 col-lg-7" style="background-image: url('../assets/images/bg11.png'); background-size: cover; background-position: top center; opacity: 0.7;">
+          
           </div>
         </div>
       </div>

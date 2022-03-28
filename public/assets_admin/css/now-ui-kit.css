@@ -2990,18 +2990,10 @@ textarea.form-control {
   max-height: 80px;
   padding: 10px 10px 0 0;
   resize: none;
-  border: none;
-  border-bottom: 1px solid #E3E3E3;
   border-radius: 0;
   line-height: 2;
 }
 
-textarea.form-control:focus,
-textarea.form-control:active {
-  border-left: none;
-  border-top: none;
-  border-right: none;
-}
 
 .has-success.form-group .form-control,
 .has-success.form-group.no-border .form-control,
@@ -3024,7 +3016,6 @@ textarea.form-control:active {
 
 .form-check {
   margin-top: .65rem;
-  padding-left: 0;
 }
 
 .form-check .form-check-label {
@@ -3086,9 +3077,8 @@ textarea.form-control:active {
 
 .form-check input[type="checkbox"],
 .radio input[type="radio"] {
-  opacity: 0;
+
   position: absolute;
-  visibility: hidden;
 }
 
 .form-check input[type="checkbox"]:checked+.form-check-sign::after {
@@ -4434,7 +4424,7 @@ Created using IcoMoon - icomoon.io
 }
 
 .nav-tabs>.nav-item>.nav-link {
-  color: #888888;
+  color: #111;
   margin: 0;
   margin-right: 5px;
   background-color: transparent;
@@ -7302,6 +7292,45 @@ img {
   }
 }
 
+.btn.btn-white:active,
+.btn.btn-white:hover,
+.btn.btn-white:focus {
+  background-color: #2193b0 !important;
+}
 
 
+.panel-title {
+  position: relative;
+  cursor: pointer;
+}
+  
+.panel-title::after {
+  content: "\f107";
+  color: #333;
+  top: -2px;
+  right: 0px;
+  position: absolute;
+  font-family: "FontAwesome"
+}
+
+.panel-title[aria-expanded="true"]::after {
+  content: "\f106";
+}
+
+/*
+ * Added 12-27-20 to showcase full title clickthrough
+ */
+
+.panel-heading-full.panel-heading {
+  padding: 0;
+}
+
+.panel-heading-full .panel-title {
+  padding: 10px 15px;
+}
+
+.panel-heading-full .panel-title::after {
+  top: 10px;
+  right: 15px;
+}
 /*# sourceMappingURL=kit-free.css.map */

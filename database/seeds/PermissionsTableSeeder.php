@@ -12,9 +12,6 @@ class PermissionsTableSeeder extends Seeder
                 'title' => 'admin_access',
             ],
             [
-                'title' => 'clinic_access',
-            ],
-            [
                 'title' => 'client_access',
             ],
         ];

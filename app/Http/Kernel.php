@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'checkregistered'   => \App\Http\Middleware\CheckRegistered::class,
+        'isComplete'       => \App\Http\Middleware\IsComplete::class,
+        'isActivate'       => \App\Http\Middleware\IsActivate::class,
     ];
 }

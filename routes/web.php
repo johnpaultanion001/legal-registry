@@ -1,91 +1,84 @@
 <?php
-use App\Http\Controllers\Admin\TransactionController;
-use App\Http\Controllers\Admin\BranchLocatorController;
-use App\Http\Controllers\Admin\FinderClinicContoller;
-use App\Http\Controllers\Admin\ContactUsController;
-use App\Http\Controllers\Admin\CalculatorController;
 
 
 Route::redirect('/', '/login');
 
 
-// Finder Clinic
-Route::get('/finder_clinic', [FinderClinicContoller::class, 'index'])->name('finder_clinic.index');
-Route::get('/finder_clinic/search', [FinderClinicContoller::class, 'search'])->name('finder_clinic.search');
-
 Auth::routes(['verify' => true]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified']], function () {
-   Route::get('/clinic/approve', function() {
-          return view('auth.approve');
+   Route::get('/client/account', function() {
+          return view('auth.account');
         });
+
+    //MY ACCOUNT
+    Route::post('/client/account',  'UsersController@account_update')->name('accounts.account_update');
 });
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified', 'checkregistered']], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified', 'isComplete']], function () {
+    Route::get('/client/activate', function() {
+           return view('auth.activate');
+         });
+ 
+ });
+
+
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'verified', 'isComplete', 'isActivate']], function () {
      
     // Client
-    // Appoitment Form
-    Route::get('/appointment/form', 'AppointmentController@form')->name('appointment.form');
-    // Appoitment Index
-    Route::get('/appointment', 'AppointmentController@index')->name('appointment.index');
-    // Appoitment Store
-    Route::post('/appointment', 'AppointmentController@store')->name('appointment.store');
-    // Appoitment Update
-    Route::get('/appointment/{appointment}', 'AppointmentController@update')->name('appointment.update');
-    // Appoitment Cancel
-    Route::delete('/appointment/{appointment}', 'AppointmentController@destroy')->name('appointment.destroy');
+    // QUESTIONNAIRE FORM
+    Route::get('/client/questionnaire', 'ClientController@questionnaire_index')->name('client.questionnaire_index');
+    Route::get('/client/questionnaire/{industry_id}', 'ClientController@questionnaire')->name('client.questionnaire');
+    Route::post('/client/questionnaire', 'ClientController@questionnaire_answer')->name('client.questionnaire_answer');
 
-    // Clinic
-    // Appoitment Index
-    Route::get('/clinic/appointments', 'ClinicController@appointments')->name('clinic.appointments');
-    Route::get('/clinic/change_status/appointments', 'ClinicController@change_status')->name('clinic.change_status');
-
-    // Doctor Index
-    Route::get('/clinic/doctors', 'ClinicController@doctors')->name('clinic.doctors');
-    Route::post('/clinic/doctors', 'ClinicController@doctors_store')->name('clinic.doctors_store');
-    Route::post('/clinic/doctors/{doctor}', 'ClinicController@doctors_update')->name('clinic.doctors_update');
-    Route::get('/clinic/doctors/{doctor}/edit', 'ClinicController@doctors_edit')->name('clinic.doctors_edit');
-    Route::delete('/clinic/doctors/{doctor}', 'ClinicController@doctors_destroy')->name('clinic.doctors_destroy');
-
-    // Services Index
-    Route::get('/clinic/services', 'ClinicController@services')->name('clinic.services');
-    Route::post('/clinic/services', 'ClinicController@services_store')->name('clinic.services_store');
-    Route::put('/clinic/services/{service}', 'ClinicController@services_update')->name('clinic.services_update');
-    Route::get('/clinic/services/{service}/edit', 'ClinicController@services_edit')->name('clinic.services_edit');
-    Route::delete('/clinic/services/{service}', 'ClinicController@services_destroy')->name('clinic.services_destroy');
+    // LEGAL COMPLIANCE LAWS
+    Route::get('/client/legal_compliance_laws', 'ClientController@laws_index')->name('client.laws_index');
+    Route::get('/client/legal_compliance_laws/{industry_id}', 'ClientController@laws')->name('client.laws');
+    
 
     //Admin
-    Route::get('/clinics', 'AdminController@clinics')->name('clinics.index');
-    Route::get('/clients', 'AdminController@clients')->name('clients.index');
-    Route::get('/clinics/approved', 'AdminController@approved')->name('clinic.approved');
+    Route::get('/library_index', 'AdminController@library_index')->name('library.library_index');
+    Route::get('/library_index/{industry_id}', 'AdminController@library')->name('library.library');
 
-    // Appoitment Index
-    Route::get('/appointments', 'AdminController@appointments')->name('admin.appointments');
-    Route::get('/change_status/appointments', 'AdminController@change_status')->name('admin.change_status');
+    Route::post('/library/industry', 'AdminController@store_industry')->name('library.store_industry');
+    Route::post('/library/industry/{industry}', 'AdminController@update_industry')->name('library.update_industry');
 
-    Route::get('/accounts', 'UsersController@index')->name('accounts.index');
-    Route::get('/accounts/{account}/edit', 'UsersController@edit')->name('accounts.edit');
-    Route::post('/accounts', 'UsersController@store')->name('accounts.store');
-    Route::put('/accounts/{account}', 'UsersController@update')->name('accounts.update');
-    Route::delete('/accounts/{account}', 'UsersController@destroy')->name('accounts.destroy');
+    // For editing
+    Route::get('/library/industry/edit', 'AdminController@edit_industry')->name('library.edit_industry');
+    Route::get('/library/type_of_trade_act_dd', 'AdminController@type_of_trade_act_dd')->name('library.type_of_trade_act_dd');
+    Route::get('/library/subtitle_of_law_dd', 'AdminController@subtitle_of_law_dd')->name('library.subtitle_of_law_dd');
+    Route::get('/library/title_of_laws', 'AdminController@title_of_laws')->name('library.title_of_laws');
+    Route::delete('/library/{industry}', 'AdminController@destroy_industry')->name('library.destroy');
+
+    // Type of trade
+    Route::post('/library/type_of_trade', 'AdminController@type_of_trade')->name('library.type_of_trade');
+    Route::post('/library/type_of_trade_update/{type_of_trade}', 'AdminController@type_of_trade_update')->name('library.type_of_trade_update');
+    Route::get('/library/type_of_trade/{type_of_trade}', 'AdminController@edit_type_of_trade')->name('library.edit_type_of_trade');
+    Route::delete('/library/type_of_trade_update/{type_of_trade}', 'AdminController@type_of_trade_destroy')->name('library.type_of_trade_destroy');
+    
+
+    // Subtitle of laws
+    Route::post('/library/subtitle_of_law/{type_of_trade}', 'AdminController@subtitle_of_law')->name('library.subtitle_of_law');
+    Route::get('/library/subtitle_of_law/{subtitle_of_law}', 'AdminController@edit_subtitle_of_law')->name('library.edit_subtitle_of_law');
+   
+    // Manage Client
+    Route::get('/manage_client', 'ManageClientController@manage_client_index')->name('manage_client.manage_client_index');
+    Route::get('/manage_client/{user_id}', 'ManageClientController@manage_client')->name('manage_client.manage_client');
+    Route::get('/manage_client/account/status', 'ManageClientController@account_status')->name('manage_client.account_status');
+    Route::post('/manage_client/{user_id}/update', 'ManageClientController@update_client')->name('manage_client.update_client');
+    Route::put('/manage_client/{user_id}/dpass', 'ManageClientController@defaultPassowrd')->name('manage_client.dpass');
+    Route::delete('/manage_client/{user_id}/clear_form', 'ManageClientController@clear_form')->name('manage_client.clear_form');
+    
+    // Add Admin
+    Route::get('/add_admin', 'AdminController@add_admin')->name('add_admin.index');
+    Route::get('/add_admin/{account}/edit', 'AdminController@edit_admin')->name('add_admin.edit');
+    Route::post('/add_admin', 'AdminController@store_admin')->name('add_admin.store');
+    Route::put('/add_admin/{account}', 'AdminController@update_admin')->name('add_admin.update');
+    Route::delete('/add_admin/{account}', 'AdminController@destroy_admin')->name('add_admin.destroy');
 
     //Change Password
     Route::get('/change_password', 'UsersController@changepassword')->name('accounts.changepassword');
     Route::put('/change_password/{user}', 'UsersController@passwordupdate')->name('accounts.passwordupdate');
-
-    //Announcements
-    Route::get('/announcements', 'AnnouncementController@index')->name('announcements.index');
-    Route::post('/announcements', 'AnnouncementController@store')->name('announcements.store');
-    Route::post('/announcements/{announcement}', 'AnnouncementController@update')->name('announcements.update');
-    Route::get('/announcements/{announcement}/edit', 'AnnouncementController@edit')->name('announcements.edit');
-    Route::delete('/announcements/{announcement}', 'AnnouncementController@destroy')->name('announcements.destroy');
-
-
-    //MY ACCOUNT
-    Route::get('/edit_account',  'UsersController@edit_account')->name('accounts.edit_account');
-    Route::post('/edit_account/{account}',  'UsersController@edit_account_update')->name('accounts.edit_account_update');
-
-   
 });
 
 

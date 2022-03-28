@@ -12,11 +12,26 @@ class Client extends Model
         'user_id',
         'name',
         'address',
-        'contact_number'
+        'contact_number',
+       
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function question_forms()
+    {
+        return $this->hasMany(QuestionForm::class, 'client_id' , 'id');
+    }
+    public function industries()
+    {
+        return $this->hasMany(Client_TOI::class, 'client_id' , 'id');
+    }
+    public function type_of_trades()
+    {
+        return $this->hasMany(Client_TOI::class, 'client_id' , 'id');
+    }
+   
 }
