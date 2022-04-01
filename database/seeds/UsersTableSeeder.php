@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
         $clients = [
             [
                 'user_id'               => '2',
-                'name'                  => 'JP',
+                'name'                  => 'Test Client',
                 'address'               => 'Antipolo City',
                 'contact_number'        => '09111111111',
 

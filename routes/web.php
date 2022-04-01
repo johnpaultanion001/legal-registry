@@ -2,6 +2,10 @@
 
 
 Route::redirect('/', '/login');
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('optimize:clear');
+    // return what you want
+});
 
 
 Auth::routes(['verify' => true]);
