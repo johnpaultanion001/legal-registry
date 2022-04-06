@@ -17,11 +17,11 @@ class TypeOfIndustry extends Model
     {
         return $this->hasMany(TOI_TOTA::class, 'type_of_industry_id' , 'id')->orderBy('created_at', 'asc');
     }
-
-    public function question_form_answers()
+    public function client_all_industries()
     {
-        return $this->hasMany(QuestionForm::class, 'title_of_law_id' , 'id')->where('client_id', auth()->user()->client->id);
+        return $this->hasMany(Client_TOI::class, 'type_of_industry_id' , 'id');
     }
+
     public function client_industries()
     {
         return $this->hasMany(Client_TOI::class, 'type_of_industry_id' , 'id')->where('client_id', auth()->user()->client->id ?? '');

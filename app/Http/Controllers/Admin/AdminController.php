@@ -341,7 +341,11 @@ class AdminController extends Controller
 
     public function destroy_industry(TypeOfIndustry $industry)
     {
-        return response()->json(['success' => $industry->delete()]);
+        $industry->toi_tota()->delete();
+        $industry->client_all_industries()->delete();
+        $industry->delete();
+
+        return response()->json(['success' => 'Successfully deleted']);
     }
     
 

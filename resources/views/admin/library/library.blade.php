@@ -663,7 +663,6 @@ $(document).on('click', '.remove_industry', function(){
           confirm: {
               text: 'confirm',
               btnClass: 'btn-blue',
-              keys: ['enter', 'shift'],
               action: function(){
                   return $.ajax({
                       url:"/admin/library/"+id,
@@ -686,7 +685,6 @@ $(document).on('click', '.remove_industry', function(){
           cancel:  {
               text: 'cancel',
               btnClass: 'btn-red',
-              keys: ['enter', 'shift'],
           }
       }
   });
