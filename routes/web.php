@@ -1,7 +1,8 @@
 <?php
 
+Route::redirect('/', '/admin/library_index/');
 
-Route::redirect('/', '/login');
+
 Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('optimize:clear');
     // return what you want

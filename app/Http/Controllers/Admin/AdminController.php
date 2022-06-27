@@ -22,7 +22,9 @@ class AdminController extends Controller
 {
     public function library_index()
     {
-        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        if(Gate::denies('admin_access')){
+            return redirect('/admin/client/questionnaire/');
+        }
         $industry = TypeOfIndustry::orderBy('title', 'asc')->first();
         return redirect('/admin/library_index/'.$industry->id);
     }
