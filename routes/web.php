@@ -64,7 +64,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Subtitle of laws
     Route::post('/library/subtitle_of_law/{type_of_trade}', 'AdminController@subtitle_of_law')->name('library.subtitle_of_law');
     Route::get('/library/subtitle_of_law/{subtitle_of_law}', 'AdminController@edit_subtitle_of_law')->name('library.edit_subtitle_of_law');
-   
+    Route::delete('/library/subtitle_of_law/{subtitle_of_law}', 'AdminController@subtitle_of_law_destroy')->name('library.subtitle_of_law_destroy');
+
     // Manage Client
     Route::get('/manage_client', 'ManageClientController@manage_client_index')->name('manage_client.manage_client_index');
     Route::get('/manage_client/{user_id}', 'ManageClientController@manage_client')->name('manage_client.manage_client');

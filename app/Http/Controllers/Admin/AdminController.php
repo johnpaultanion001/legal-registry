@@ -23,12 +23,12 @@ class AdminController extends Controller
     public function library_index()
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $industry = TypeOfIndustry::latest()->first();
+        $industry = TypeOfIndustry::orderBy('title', 'asc')->first();
         return redirect('/admin/library_index/'.$industry->id);
     }
     public function library(TypeOfIndustry $industry_id)
     {
-        $industries = TypeOfIndustry::latest()->get();
+        $industries = TypeOfIndustry::orderBy('title', 'asc')->get();
         return view('admin.library.library', compact('industries','industry_id'));
     }
     public function store_industry(Request $request)
@@ -91,7 +91,7 @@ class AdminController extends Controller
       
 
         return response()->json([
-            'type_of_trades'  => $type_of_trades,
+            'type_of_trades'  => $type_of_trades ?? '',
         ]);
     }
 
@@ -109,7 +109,7 @@ class AdminController extends Controller
       
 
         return response()->json([
-            'subtitle_of_laws'  => $subtitle_of_laws,
+            'subtitle_of_laws'  => $subtitle_of_laws ?? '',
         ]);
     }
     public function edit_industry(Request $request){
@@ -135,7 +135,7 @@ class AdminController extends Controller
             );
         }
         return response()->json([
-            'title_of_laws'  => $title_of_laws,
+            'title_of_laws'  => $title_of_laws ?? '',
         ]);
     }
     public function update_industry(Request $request, TypeOfIndustry $industry)
@@ -219,7 +219,6 @@ class AdminController extends Controller
         }
 
         if ($request->file('file_type_of_trade_act')) {
-            File::delete(public_path('assets/pdf/'.$type_of_trade->file));
             $pdf = $request->file('file_type_of_trade_act');
             $extension = $pdf->getClientOriginalExtension(); 
             $file_name_to_save = $request->input('type_of_trade_act').time().".".$extension;
@@ -235,8 +234,20 @@ class AdminController extends Controller
     }
     public function type_of_trade_destroy(TypeOfTradeAct $type_of_trade)
     {
-        
+        $type_of_trade->toi_tota()->delete();
+        $type_of_trade->title_of_laws()->delete();
+        $type_of_trade->subtitle_of_laws()->delete();
+        $type_of_trade->delete();
+        return response()->json(['success' => 'Delete Record.']);
     }
+
+    public function subtitle_of_law_destroy(SubtitleOfLaw $subtitle_of_law)
+    {
+        $subtitle_of_law->title_of_laws()->delete();
+        $subtitle_of_law->delete();
+        return response()->json(['success' => 'Delete Record.']);
+    }
+    
     
     public function edit_type_of_trade(TypeOfTradeAct $type_of_trade)
     {

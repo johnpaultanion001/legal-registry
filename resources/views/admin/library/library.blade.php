@@ -96,9 +96,10 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="control-label text-uppercase  h6" >Type of trade act <span class="text-danger">*</span>
-                            <button type="button" id="btn_new_type_of_trade" class="btn btn-sm btn-info ml-2"><i class="fas fa-plus-circle"></i></button>
-                            <button type="button" id="btn_edit_type_of_trade" class="btn btn-sm btn-success ml-2"><i class="fas fa-pen"></i></button>
+                        <label class="control-label text-uppercase  h6" >Legal compliance law  <span class="text-danger">*</span>
+                            <button type="button" id="btn_new_type_of_trade" class="btn btn-sm btn-info"><i class="fas fa-plus-circle"></i></button>
+                            <button type="button" id="btn_edit_type_of_trade" class="btn btn-sm btn-success"><i class="fas fa-pen"></i></button>
+                            <button type="button" id="btn_remove_type_of_trade" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                             
                         </label>
                         <div id="new_type_of_trade_act">
@@ -118,7 +119,7 @@
                         <label class="control-label text-uppercase  h6" >Subtitle of law <span class="text-danger">*</span>
                             <button type="button" id="btn_new_subtitle_of_law" class="btn btn-sm btn-info ml-2"><i class="fas fa-plus-circle"></i></button>
                             <button type="button" id="btn_edit_subtitle_of_law" class="btn btn-sm btn-success ml-2"><i class="fas fa-pen"></i></button>
-                            
+                            <button type="button" id="btn_remove_subtitle_of_law" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                         </label>
                         <div id="new_subtitle_of_law">
                             <textarea name="subtitle_of_law" id="subtitle_of_law"  class="form-control"></textarea>
@@ -134,7 +135,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label class="control-label text-uppercase  h6" >Title of law <span class="text-danger">*</span></label>
-                        <div id="section_title_of_laws" style="height:400px; overflow-y: auto; overflow-x: hidden;">
+                        <div id="section_title_of_laws" style="height:200px; overflow-y: auto; overflow-x: hidden;">
                             <div class="parentContainer">
                                 <div class="row childrenContainer">
                                     <div class="col-8">
@@ -170,7 +171,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title text-uppercase font-weight-bold">TYPE OF TRADE</h5>
+            <h5 class="modal-title text-uppercase font-weight-bold">Legal compliance law</h5>
             <button type="button" class="close otherModalClose">
                 <i class="fas fa-times"></i>
             </button>
@@ -178,7 +179,7 @@
             <div class="modal-body row">
                 <div class="col-md-12" id="form_type_of_trade_act">
                     <div class="form-group">
-                        <label class="control-label text-uppercase  h6" >Type of trade act <span class="text-danger">*</span></label>
+                        <label class="control-label text-uppercase  h6" >Legal compliance law  <span class="text-danger">*</span></label>
                         <textarea name="type_of_trade_act" id="type_of_trade_act_other" class="form-control"></textarea>
                         <input type="file" name="file_type_of_trade_act" class="mt-1 form-control"/>
                         <span class="text-danger">
@@ -376,9 +377,95 @@ $("#btn_edit_type_of_trade").on('click', function() {
             }
         })
     }else{
-        $('#error-type_of_trade_act').text('The type of trade act dd field is required.');
+        $('#error-type_of_trade_act').text('Legal compliance law dropdown field is required.');
     }
 });
+
+$("#btn_remove_type_of_trade").on('click', function() {
+    if($('#type_of_trade_act_dd').val() != ''){
+        $.confirm({
+            title: 'Confirmation',
+            content: 'You really want to remove this record?',
+            type: 'red',
+            buttons: {
+                confirm: {
+                    text: 'confirm',
+                    btnClass: 'btn-blue',
+                    action: function(){
+                        return $.ajax({
+                            url:"/admin/library/type_of_trade_update/"+ $('#type_of_trade_act_dd').val(),
+                            method:'DELETE',
+                            data: {
+                                _token: '{!! csrf_token() !!}',
+                            },
+                            dataType:"json",
+                            beforeSend:function(){
+                                
+                            },
+                            success:function(data){
+                                if(data.success){
+                                    $('#error-type_of_trade_act_other').text(null)
+                                    type_of_trade_act_dd(id_industry);
+                                }
+                            }
+                        })
+                    }
+                },
+                cancel:  {
+                    text: 'cancel',
+                    btnClass: 'btn-red',
+                }
+            }
+        });
+    }else{
+        $('#error-type_of_trade_act').text('Legal compliance law dropdown field is required.');
+    }
+});
+
+$("#btn_remove_subtitle_of_law").on('click', function() {
+    if($('#subtitle_of_law_dd').val() != ''){
+        $.confirm({
+            title: 'Confirmation',
+            content: 'You really want to remove this record?',
+            type: 'red',
+            buttons: {
+                confirm: {
+                    text: 'confirm',
+                    btnClass: 'btn-blue',
+                    action: function(){
+                        return $.ajax({
+                            url:"/admin/library/subtitle_of_law/"+ $('#subtitle_of_law_dd').val(),
+                            method:'DELETE',
+                            data: {
+                                _token: '{!! csrf_token() !!}',
+                            },
+                            dataType:"json",
+                            beforeSend:function(){
+                                
+                            },
+                            success:function(data){
+                                if(data.success){
+                                    $('#error-subtitle_of_law').text(null)
+                                    subtitle_of_law_dd($('#type_of_trade_act_dd').val());
+                                }
+                            }
+                        })
+                    }
+                },
+                cancel:  {
+                    text: 'cancel',
+                    btnClass: 'btn-red',
+                }
+            }
+        });
+    }else{
+        $('#error-subtitle_of_law').text('The subtitle of law dropdown field is required.');
+    }
+});
+
+
+
+
 
 
 
@@ -393,7 +480,7 @@ $("#btn_new_subtitle_of_law").on('click', function() {
         $('#hidden_subtitle_of_law_id').val(null);
         $('#action_type').val('subtitle_of_law');
     }else{
-        $('#error-type_of_trade_act').text('The type of trade act dd field is required.');
+        $('#error-type_of_trade_act').text('Legal compliance law dropdown field is required.');
     }
 });
 
@@ -421,7 +508,7 @@ $("#btn_edit_subtitle_of_law").on('click', function() {
             }
         })
     }else{
-        $('#error-subtitle_of_law').text('The subtitle of law dd field is required.');
+        $('#error-subtitle_of_law').text('The subtitle of law dropdown field is required.');
     }
 });
 
