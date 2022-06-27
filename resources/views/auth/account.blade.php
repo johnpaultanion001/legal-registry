@@ -6,7 +6,7 @@
 <div class="section py-0">
       <div class="container-fluid h-100">
         <div class="row h-100">
-          <div class="col-12 col-lg-5 col-md-6 my-auto">
+          <div class="col-md-10 mx-auto">
             <div class="card p-3  d-block mx-auto" style="background: transparent; box-shadow: 0 0 0;">
               <div class="card-grey py-4">
                 <form method="POST" enctype="multipart/form-data" id="myForm">
@@ -48,26 +48,34 @@
                         <span class="text-danger" role="alert">
                             <strong id="error-type_of_industry"></strong>
                         </span>
-                        @foreach($type_of_industries as $industry)
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="{{$industry->id}}"
-                           name="type_of_industry[]" id="{{$industry->title}}{{$industry->id}}"
-                            @if($industry->client_industries()->count() > 0)
-                              checked
-                            @endif>
-                          <label class="control-label text-uppercase h6" for="{{$industry->title}}{{$industry->id}}">
-                            {{$industry->title}}
-                          </label>
-                          <br>
-                          @foreach($industry->toi_tota()->get() as $act)
-                            <label class="control-label text-uppercase" for="{{$industry->title}}{{$industry->id}}">
-                                {{$act->type_of_trade_act->title}} 
-                            </label> <br>
+                        <div class="row">
+                          @foreach($type_of_industries as $industry)
+                          
+                            <div class="col-md-6 mx-auto ">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="form-check">
+                                      <input class="form-check-input" type="checkbox" value="{{$industry->id}}"
+                                      name="type_of_industry[]" id="{{$industry->title}}{{$industry->id}}"
+                                        @if($industry->client_industries()->count() > 0)
+                                          checked
+                                        @endif>
+                                      <label class="control-label text-uppercase h6" for="{{$industry->title}}{{$industry->id}}">
+                                        {{$industry->title}}
+                                      </label>
+                                      <br>
+                                      @foreach($industry->toi_tota()->get() as $act)
+                                        <label class="control-label text-uppercase" for="{{$industry->title}}{{$industry->id}}">
+                                            {{$act->type_of_trade_act->title}} 
+                                        </label> <br>
+                                      @endforeach
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
                           @endforeach
                         </div>
-                       @endforeach
-                        
-                       
                       </div>
                       <input type="submit" class="btn btn-main" id="action_button" name="action_button" value="Submit" />
                       
@@ -76,9 +84,6 @@
                 </div>
                
               </div>
-          </div>
-          <div class="d-none d-md-block col-md-6 col-lg-7" style="background-image: url('../../assets/images/bg11.png'); background-size: cover; background-position: top center; opacity: 0.7;">
-          
           </div>
         </div>
         
